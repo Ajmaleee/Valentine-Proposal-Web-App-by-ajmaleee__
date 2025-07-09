@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Valentine Request 💘</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Watermark -->
+  <a class="watermark" href="https://www.instagram.com/ajmaleee__" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" />
+    <span>@ajmaleee__</span>
+  </a>
+
+  <!-- Heart particles -->
+  <div class="heart-container" id="heartContainer"></div>
+
+  <!-- Fireworks -->
+  <canvas id="fireworkCanvas"></canvas>
+
+  <!-- Music & Click -->
+  <audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2023/03/28/audio_360b150f9e.mp3?filename=romantic-stroll-144465.mp3" autoplay loop></audio>
+  <audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_cbfea6c94a.mp3?filename=click-124467.mp3"></audio>
+
+  <div class="container">
+    <h1>Will you be my Valentine? 🌹</h1>
+    <div class="buttons">
+      <button id="yesBtn" class="yes-button" onclick="handleYesClick()">Yes 💖</button>
+      <button class="no-button" onclick="handleNoClick()">No 💔</button>
+    </div>
+    <div class="gif_container">
+      <img src="https://media.tenor.com/Nw3Wu1jBNK4AAAAC/bear-kiss.gif" alt="Cute Bear Love GIF" />
+    </div>
+  </div>
+
+  <div id="bouncer"></div>
+
+  <script>
+    const yesBtn = document.getElementById("yesBtn");
+    const bouncer = document.getElementById("bouncer");
+    const heartContainer = document.getElementById("heartContainer");
+    const clickSound = document.getElementById("clickSound");
+
+    let yesSize = 1.2;
+    let clickCount = 0;
+
+    const lines = [/* 50 pleading lines */ "Please don't say no 😭", "Come on, give me a chance 🥺", "You're breaking my heart 💔", "How could you?! 😢", "Just say YES already 😭", "Pretty please? 🥹", "I'll bring you chocolates 🍫", "I promise I’m cute 🙈", "Don’t reject me again 😩", "Last chance... maybe? 😬", "Think about our future 😭", "Even Google says yes 😩", "You're too lovely to say no 💫", "My heart depends on this 💘", "Say no and I’ll cry forever 😭", "Valentine’s won’t be the same 😭", "Say yes for the teddy 🧸", "Say yes for the vibe 🌈", "Even ChatGPT approves! 🤖", "This is your sign 💌", "One yes = one smile 😄", "Don't do this to me 😔", "I’ll forgive all your mistakes 😇", "Please? 🥲", "I’m on my knees 😩", "Y U NO say yes 😭", "Just imagine us together 🥰", "Do it for the memes 😂", "Our love is trending 💘", "TikTok told me you'd say yes", "Netflix and YES? 🍿", "You're the peanut to my butter 🥜", "The moon said you’d say yes 🌕", "I asked a crystal ball, it said YES 🔮", "One yes = infinite hugs 🤗", "Say no = heart attack 💔", "Love is in the code 💻", "Ajmaleee__ believes in us ✨", "Only YES makes sense 🧠", "Even the bear said yes 🐻", "Don't ghost me 🥺", "Yes = pizza forever 🍕", "Say yes before I turn into a pickle 🥒", "Swipe right on life ❤️", "No means I reset my router 🚪", "Say yes & win ₹1 🤑", "One yes a day keeps the sadness away", "The stars are watching ✨", "Your yes could save the universe 🌌", "NOOOOOOOOOOOOOOOOOOO 🫠", "❤️‍🩹"];
+
+    function handleYesClick() {
+      clickSound.play();
+      startFireworks();
+      setTimeout(() => {
+        window.location.href = "yes_page.html";
+      }, 2800);
+    }
+
+    function handleNoClick() {
+      clickSound.play();
+      yesSize += 0.1;
+      yesBtn.style.transform = `scale(${yesSize})`;
+      if (clickCount < lines.length) {
+        createBouncer(lines[clickCount]);
+        clickCount++;
+      }
+    }
+
+    function createBouncer(text) {
+      const div = document.createElement("div");
+      div.className = "bouncing-text";
+      div.innerText = text;
+      bouncer.appendChild(div);
+      let x = Math.random() * (window.innerWidth - 200);
+      let y = Math.random() * (window.innerHeight - 100);
+      let dx = (Math.random() < 0.5 ? -1 : 1) * (2 + Math.random() * 2);
+      let dy = (Math.random() < 0.5 ? -1 : 1) * (2 + Math.random() * 2);
+
+      function animate() {
+        x += dx;
+        y += dy;
+        if (x <= 0 || x + div.offsetWidth >= window.innerWidth) dx *= -1;
+        if (y <= 0 || y + div.offsetHeight >= window.innerHeight) dy *= -1;
+        div.style.left = x + "px";
+        div.style.top = y + "px";
+        requestAnimationFrame(animate);
+      }
+      animate();
+    }
+
+    setInterval(() => {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = 3 + Math.random() * 2 + "s";
+      heartContainer.appendChild(heart);
+      setTimeout(() => heart.remove(), 5000);
+    }, 300);
+
+    const canvas = document.getElementById("fireworkCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+
+    function startFireworks() {
+      let particles = [];
+      for (let i = 0; i < 100; i++) {
+        particles.push({
+          x: innerWidth / 2,
+          y: innerHeight / 2,
+          radius: Math.random() * 3 + 1,
+          dx: (Math.random() - 0.5) * 8,
+          dy: (Math.random() - 0.5) * 8,
+          color: `hsl(${Math.random() * 360}, 100%, 50%)`
+        });
+      }
+
+      function animate() {
+        ctx.fillStyle = "rgba(0,0,0,0.1)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p, i) => {
+          p.x += p.dx;
+          p.y += p.dy;
+          p.radius *= 0.96;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.fill();
+          if (p.radius < 0.5) particles.splice(i, 1);
+        });
+        if (particles.length) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      animate();
+    }
+
+    window.addEventListener("resize", () => {
+      canvas.width = innerWidth;
+      canvas.height = innerHeight;
+    });
+  </script>
+</body>
+</html>
