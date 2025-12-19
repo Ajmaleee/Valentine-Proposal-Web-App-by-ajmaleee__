@@ -2,12 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
   <title>Valentine Request 💘</title>
   <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Animated gradient background -->
+  <div class="gradient-bg"></div>
+
+  <!-- Cursor follower for liquid effect -->
+  <div class="cursor-glow" id="cursorGlow"></div>
+
   <!-- Watermark -->
   <a class="watermark" href="https://www.instagram.com/ajmaleee__" target="_blank">
     <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" />
@@ -24,32 +30,79 @@
   <audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2023/03/28/audio_360b150f9e.mp3?filename=romantic-stroll-144465.mp3" autoplay loop></audio>
   <audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_cbfea6c94a.mp3?filename=click-124467.mp3"></audio>
 
-  <div class="container">
-    <h1>Will you be my Valentine? 🌹</h1>
-    <div class="buttons">
-      <button id="yesBtn" class="yes-button" onclick="handleYesClick()">Yes 💖</button>
-      <button class="no-button" onclick="handleNoClick()">No 💔</button>
-    </div>
+  <!-- Glass morphism container -->
+  <div class="glass-container">
+    <div class="shimmer"></div>
+    <h1 class="title">Will you be my Valentine?</h1>
+    <div class="emoji-heart">🌹</div>
+
     <div class="gif_container">
-      <img src="https://media.tenor.com/Nw3Wu1jBNK4AAAAC/bear-kiss.gif" alt="Cute Bear Love GIF" />
+      <div class="gif-frame">
+        <img src="https://media.tenor.com/Nw3Wu1jBNK4AAAAC/bear-kiss.gif" alt="Cute Bear Love GIF" />
+      </div>
     </div>
+
+    <div class="buttons">
+      <button id="yesBtn" class="yes-button">
+        <span class="button-shine"></span>
+        <span class="button-text">Yes</span>
+        <span class="button-icon">💖</span>
+      </button>
+      <button id="noBtn" class="no-button">
+        <span class="button-shine"></span>
+        <span class="button-text">No</span>
+        <span class="button-icon">💔</span>
+      </button>
+    </div>
+
+    <div class="hint-text">Tap the buttons to answer...</div>
   </div>
 
   <div id="bouncer"></div>
 
   <script>
     const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
     const bouncer = document.getElementById("bouncer");
     const heartContainer = document.getElementById("heartContainer");
     const clickSound = document.getElementById("clickSound");
+    const cursorGlow = document.getElementById("cursorGlow");
+    const glassContainer = document.querySelector(".glass-container");
 
-    let yesSize = 1.2;
+    let yesSize = 1;
     let clickCount = 0;
+    let mouseX = 0;
+    let mouseY = 0;
+    let currentX = 0;
+    let currentY = 0;
 
-    const lines = [/* 50 pleading lines */ "Please don't say no 😭", "Come on, give me a chance 🥺", "You're breaking my heart 💔", "How could you?! 😢", "Just say YES already 😭", "Pretty please? 🥹", "I'll bring you chocolates 🍫", "I promise I’m cute 🙈", "Don’t reject me again 😩", "Last chance... maybe? 😬", "Think about our future 😭", "Even Google says yes 😩", "You're too lovely to say no 💫", "My heart depends on this 💘", "Say no and I’ll cry forever 😭", "Valentine’s won’t be the same 😭", "Say yes for the teddy 🧸", "Say yes for the vibe 🌈", "Even ChatGPT approves! 🤖", "This is your sign 💌", "One yes = one smile 😄", "Don't do this to me 😔", "I’ll forgive all your mistakes 😇", "Please? 🥲", "I’m on my knees 😩", "Y U NO say yes 😭", "Just imagine us together 🥰", "Do it for the memes 😂", "Our love is trending 💘", "TikTok told me you'd say yes", "Netflix and YES? 🍿", "You're the peanut to my butter 🥜", "The moon said you’d say yes 🌕", "I asked a crystal ball, it said YES 🔮", "One yes = infinite hugs 🤗", "Say no = heart attack 💔", "Love is in the code 💻", "Ajmaleee__ believes in us ✨", "Only YES makes sense 🧠", "Even the bear said yes 🐻", "Don't ghost me 🥺", "Yes = pizza forever 🍕", "Say yes before I turn into a pickle 🥒", "Swipe right on life ❤️", "No means I reset my router 🚪", "Say yes & win ₹1 🤑", "One yes a day keeps the sadness away", "The stars are watching ✨", "Your yes could save the universe 🌌", "NOOOOOOOOOOOOOOOOOOO 🫠", "❤️‍🩹"];
+    const lines = ["Please don't say no 😭", "Come on, give me a chance 🥺", "You're breaking my heart 💔", "How could you?! 😢", "Just say YES already 😭", "Pretty please? 🥹", "I'll bring you chocolates 🍫", "I promise I'm cute 🙈", "Don't reject me again 😩", "Last chance... maybe? 😬", "Think about our future 😭", "Even Google says yes 😩", "You're too lovely to say no 💫", "My heart depends on this 💘", "Say no and I'll cry forever 😭", "Valentine's won't be the same 😭", "Say yes for the teddy 🧸", "Say yes for the vibe 🌈", "Even ChatGPT approves! 🤖", "This is your sign 💌", "One yes = one smile 😄", "Don't do this to me 😔", "I'll forgive all your mistakes 😇", "Please? 🥲", "I'm on my knees 😩", "Y U NO say yes 😭", "Just imagine us together 🥰", "Do it for the memes 😂", "Our love is trending 💘", "TikTok told me you'd say yes", "Netflix and YES? 🍿", "You're the peanut to my butter 🥜", "The moon said you'd say yes 🌕", "I asked a crystal ball, it said YES 🔮", "One yes = infinite hugs 🤗", "Say no = heart attack 💔", "Love is in the code 💻", "Ajmaleee__ believes in us ✨", "Only YES makes sense 🧠", "Even the bear said yes 🐻", "Don't ghost me 🥺", "Yes = pizza forever 🍕", "Say yes before I turn into a pickle 🥒", "Swipe right on life ❤️", "No means I reset my router 🚪", "Say yes & win ₹1 🤑", "One yes a day keeps the sadness away", "The stars are watching ✨", "Your yes could save the universe 🌌", "NOOOOOOOOOOOOOOOOOOO 🫠"];
+
+    document.addEventListener("mousemove", (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    document.addEventListener("touchmove", (e) => {
+      if (e.touches.length > 0) {
+        mouseX = e.touches[0].clientX;
+        mouseY = e.touches[0].clientY;
+      }
+    });
+
+    function animateCursor() {
+      currentX += (mouseX - currentX) * 0.15;
+      currentY += (mouseY - currentY) * 0.15;
+      cursorGlow.style.left = currentX + "px";
+      cursorGlow.style.top = currentY + "px";
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
 
     function handleYesClick() {
       clickSound.play();
+      yesBtn.classList.add("clicked");
+      glassContainer.classList.add("success");
       startFireworks();
       setTimeout(() => {
         window.location.href = "yes_page.html";
@@ -58,23 +111,37 @@
 
     function handleNoClick() {
       clickSound.play();
-      yesSize += 0.1;
-      yesBtn.style.transform = `scale(${yesSize})`;
+      yesSize += 0.15;
+      noBtn.classList.add("shake");
+      setTimeout(() => noBtn.classList.remove("shake"), 500);
+      yesBtn.style.transform = `scale(${1 + yesSize * 0.3})`;
       if (clickCount < lines.length) {
         createBouncer(lines[clickCount]);
         clickCount++;
       }
     }
 
+    yesBtn.addEventListener("click", handleYesClick);
+    noBtn.addEventListener("click", handleNoClick);
+
+    yesBtn.addEventListener("mouseenter", () => {
+      yesBtn.style.transform = `scale(${1 + yesSize * 0.3 + 0.1})`;
+    });
+
+    yesBtn.addEventListener("mouseleave", () => {
+      yesBtn.style.transform = `scale(${1 + yesSize * 0.3})`;
+    });
+
     function createBouncer(text) {
       const div = document.createElement("div");
       div.className = "bouncing-text";
       div.innerText = text;
       bouncer.appendChild(div);
-      let x = Math.random() * (window.innerWidth - 200);
+
+      let x = Math.random() * (window.innerWidth - 250);
       let y = Math.random() * (window.innerHeight - 100);
-      let dx = (Math.random() < 0.5 ? -1 : 1) * (2 + Math.random() * 2);
-      let dy = (Math.random() < 0.5 ? -1 : 1) * (2 + Math.random() * 2);
+      let dx = (Math.random() < 0.5 ? -1 : 1) * (2.5 + Math.random() * 2);
+      let dy = (Math.random() < 0.5 ? -1 : 1) * (2.5 + Math.random() * 2);
 
       function animate() {
         x += dx;
@@ -92,10 +159,10 @@
       const heart = document.createElement("div");
       heart.className = "heart";
       heart.style.left = Math.random() * 100 + "vw";
-      heart.style.animationDuration = 3 + Math.random() * 2 + "s";
+      heart.style.animationDuration = 4 + Math.random() * 3 + "s";
       heartContainer.appendChild(heart);
-      setTimeout(() => heart.remove(), 5000);
-    }, 300);
+      setTimeout(() => heart.remove(), 7000);
+    }, 400);
 
     const canvas = document.getElementById("fireworkCanvas");
     const ctx = canvas.getContext("2d");
@@ -104,30 +171,37 @@
 
     function startFireworks() {
       let particles = [];
-      for (let i = 0; i < 100; i++) {
+      const colors = ['#ff6b9d', '#c44569', '#f8b500', '#ffa07a', '#ff1493'];
+
+      for (let i = 0; i < 150; i++) {
         particles.push({
           x: innerWidth / 2,
           y: innerHeight / 2,
-          radius: Math.random() * 3 + 1,
-          dx: (Math.random() - 0.5) * 8,
-          dy: (Math.random() - 0.5) * 8,
-          color: `hsl(${Math.random() * 360}, 100%, 50%)`
+          radius: Math.random() * 4 + 2,
+          dx: (Math.random() - 0.5) * 12,
+          dy: (Math.random() - 0.5) * 12,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1
         });
       }
 
       function animate() {
-        ctx.fillStyle = "rgba(0,0,0,0.1)";
+        ctx.fillStyle = "rgba(0,0,0,0.08)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         particles.forEach((p, i) => {
           p.x += p.dx;
           p.y += p.dy;
-          p.radius *= 0.96;
+          p.dy += 0.1;
+          p.radius *= 0.97;
+          p.alpha *= 0.98;
+          ctx.globalAlpha = p.alpha;
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
           ctx.fillStyle = p.color;
           ctx.fill();
           if (p.radius < 0.5) particles.splice(i, 1);
         });
+        ctx.globalAlpha = 1;
         if (particles.length) requestAnimationFrame(animate);
         else ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
